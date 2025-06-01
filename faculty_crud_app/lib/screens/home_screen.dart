@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete'),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -66,61 +66,92 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Faculty List')),
+      appBar: AppBar(
+        title: const Text(
+          'Faculty List',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+      ),
       body: faculties.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: faculties.length,
-              itemBuilder: (context, index) {
-                final faculty = faculties[index];
-                return ListTile(
-                  title: Text(faculty.name),
-                  subtitle: Text(faculty.email),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            FacultyDetailScreen(faculty: faculty),
+          : Padding(
+              padding: const EdgeInsets.all(10),
+              child: ListView.builder(
+                itemCount: faculties.length,
+                itemBuilder: (context, index) {
+                  final faculty = faculties[index];
+                  return Card(
+                    elevation: 4,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.deepPurple[100],
+                        child: Text(
+                          faculty.name[0].toUpperCase(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
                       ),
-                    );
-                  },
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Edit button
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EditFacultyScreen(faculty: faculty),
-                            ),
-                          );
-                          if (result == true) {
-                            _loadFaculties(); // Refresh after edit
-                          }
-                        },
+                      title: Text(
+                        faculty.name,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16),
                       ),
-
-                      // Delete button
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          if (faculty.id != null) {
-                            _deleteFaculty(faculty.id!, index);
-                          }
-                        },
+                      subtitle: Text(
+                        faculty.email,
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                    ],
-                  ),
-                );
-              },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FacultyDetailScreen(faculty: faculty),
+                          ),
+                        );
+                      },
+                      trailing: Wrap(
+                        spacing: 8,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditFacultyScreen(faculty: faculty),
+                                ),
+                              );
+                              if (result == true) {
+                                _loadFaculties(); // Refresh after edit
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              if (faculty.id != null) {
+                                _deleteFaculty(faculty.id!, index);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepPurple,
         onPressed: () async {
           final added = await Navigator.pushNamed(context, '/add');
           if (added == true) {

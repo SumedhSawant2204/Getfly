@@ -36,6 +36,16 @@ class _EditFacultyScreenState extends State<EditFacultyScreen> {
     addressController = TextEditingController(text: widget.faculty.address);
   }
 
+  InputDecoration _buildInputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      filled: true,
+      fillColor: Colors.grey.shade100,
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     DateTime initialDate;
     try {
@@ -100,103 +110,134 @@ class _EditFacultyScreenState extends State<EditFacultyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Faculty')),
-      body: Padding(
+      backgroundColor: Colors.blue.shade50,
+      appBar: AppBar(
+        title: const Text('Edit Faculty'),
+        backgroundColor: Colors.blue.shade600,
+        elevation: 4,
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // ID Field (readonly or editable as per your logic)
-              TextFormField(
-                controller: idController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'ID'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please enter ID';
-                  if (int.tryParse(value) == null) return 'ID must be a number';
-                  return null;
-                },
-                readOnly: true, // usually ID is not editable
-              ),
-
-              // Name
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter name' : null,
-              ),
-
-              // Email
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please enter email';
-                  if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-
-              // Date of Birth with DatePicker
-              TextFormField(
-                controller: dobController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Date of Birth',
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context),
+        child: Card(
+          elevation: 10,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Text(
+                    'Update Faculty Information',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ),
                   ),
-                ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please select date of birth' : null,
-              ),
+                  const SizedBox(height: 20),
 
-              // Contact
-              TextFormField(
-                controller: contactController,
-                decoration: const InputDecoration(labelText: 'Contact'),
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter contact' : null,
-              ),
+                  TextFormField(
+                    controller: idController,
+                    keyboardType: TextInputType.number,
+                    decoration: _buildInputDecoration('ID', Icons.numbers),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Please enter ID';
+                      if (int.tryParse(value) == null) return 'ID must be a number';
+                      return null;
+                    },
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 12),
 
-              // Department
-              TextFormField(
-                controller: deptController,
-                decoration: const InputDecoration(labelText: 'Department'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter department' : null,
-              ),
+                  TextFormField(
+                    controller: nameController,
+                    decoration: _buildInputDecoration('Name', Icons.person),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter name' : null,
+                  ),
+                  const SizedBox(height: 12),
 
-              // Designation
-              TextFormField(
-                controller: designationController,
-                decoration: const InputDecoration(labelText: 'Designation'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter designation' : null,
-              ),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: _buildInputDecoration('Email', Icons.email),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Please enter email';
+                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12),
 
-              // Address
-              TextFormField(
-                controller: addressController,
-                decoration: const InputDecoration(labelText: 'Address'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Please enter address' : null,
-              ),
+                  TextFormField(
+                    controller: dobController,
+                    readOnly: true,
+                    decoration: _buildInputDecoration('Date of Birth', Icons.calendar_today)
+                        .copyWith(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.date_range),
+                        onPressed: () => _selectDate(context),
+                      ),
+                    ),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please select date of birth' : null,
+                  ),
+                  const SizedBox(height: 12),
 
-              const SizedBox(height: 20),
+                  TextFormField(
+                    controller: contactController,
+                    decoration: _buildInputDecoration('Contact', Icons.phone),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter contact' : null,
+                  ),
+                  const SizedBox(height: 12),
 
-              ElevatedButton(
-                onPressed: _submit,
-                child: const Text('Update Faculty'),
+                  TextFormField(
+                    controller: deptController,
+                    decoration: _buildInputDecoration('Department', Icons.account_tree),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter department' : null,
+                  ),
+                  const SizedBox(height: 12),
+
+                  TextFormField(
+                    controller: designationController,
+                    decoration: _buildInputDecoration('Designation', Icons.badge),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter designation' : null,
+                  ),
+                  const SizedBox(height: 12),
+
+                  TextFormField(
+                    controller: addressController,
+                    decoration: _buildInputDecoration('Address', Icons.home),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter address' : null,
+                  ),
+                  const SizedBox(height: 25),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _submit,
+                      icon: const Icon(Icons.save),
+                      label: const Text('Update Faculty'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        textStyle: const TextStyle(fontSize: 16),
+                        backgroundColor: Colors.blue.shade600,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
