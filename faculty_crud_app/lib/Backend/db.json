@@ -1,0 +1,24 @@
+{
+  "faculties": [
+    {
+      "id": "1",
+      "name": "Joh",
+      "email": "john@example.com",
+      "date_of_birth": "1980-05-10",
+      "contact": "9876543210",
+      "department": "Computer",
+      "designation": "Professor",
+      "address": "123 College Road"
+    },
+    {
+      "id": "123",
+      "name": "sumedh",
+      "email": "sumedh@gmail.com",
+      "date_of_birth": "1990-01-04",
+      "contact": "1234567890",
+      "department": "comps",
+      "designation": "student",
+      "address": "mumbai"
+    }
+  ]
+}
